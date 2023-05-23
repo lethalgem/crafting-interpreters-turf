@@ -1,0 +1,58 @@
+1. Pick an open source implementation of a language you like. Download the source code and poke around in it.
+Try to find the code that implements the scanner and parser. Are they handwritten, or generated using tools 
+like Lex and Yacc? (.l or .y files usually imply the latter.)
+
+1.a. 
+Rust - https://github.com/rust-lang/rust/tree/master/compiler/rustc_parse/src
+It appears that both the parser and lexer (scanner) are handwritten. Neither have .l or .y files. This means
+that the compiler was bootstrapped. AKA another compiler was used to compile this compiler to rust.
+I could not find out what the original compiler was written in. The going theory is C.
+
+2. Just-in-time compilation tends to be the fastest way to implement dynamically typed languages, but not 
+all of them use it. What reasons are there to not JIT?
+
+2.a.
+Modern javascript implementations also do JIT, as do some PHP, Python, and Ruby implementations (at least). 
+The trick with JIT, though, is that they are a relatively recent developement, and part of what makes them 
+work is that you rely on a framework or runtime of some type that lives on the end-user machine that is 
+capable of making the correct optimizations for that machine and instance of the application.
+
+For languages that want to be close to the "bare metal" of your computer, relying on that extra 
+abstraction layer does not always make sense.
+
+Startup time can take a noticeable amount of time.
+
+Heavy usage of cache memory. Compiling code is not free, takes time also. If it invests time 
+on compiling it and then goes to run it only a few times, it might not have made a good trade. 
+So the VM still has to decide what to define as a "hot spot" and JIT-compile it.
+
+Increases the level of complexity in a program
+
+3. Most Lisp implementations that compile to C also contain an interpreter that lets them execute Lisp code
+on the fly as well. Why?
+
+It allows the flexibility of compiling the code to be compiled ahead of time, and when changes are made, compiling 
+the changes on the fly. This can even happen as the programmer is writing the code.
+
+Interactive development: The interpreter allows for on-the-fly execution of code, which is particularly useful 
+during development. It enables a REPL (Read-Eval-Print Loop) environment, allowing developers to write and 
+test small pieces of code without having to compile the entire program. This is especially valuable for debugging, 
+prototyping, and learning.
+
+Dynamic execution: An interpreter allows Lisp systems to dynamically execute new or modified code at runtime. 
+This is particularly useful when you want to update a running program or dynamically extend its functionality 
+without stopping it.
+
+Metaprogramming: Lisp's powerful macro system and other metaprogramming features require the ability to 
+manipulate and evaluate code as data. This is made possible by the interpreter.
+
+The capability to compile to C mainly provides:
+
+Performance: Compiling Lisp code to C allows it to be executed as fast, native machine code.
+
+Portability: C is widely supported across many different platforms and systems. By compiling to C, Lisp code 
+can be run on almost any system that has a C compiler.
+
+In summary, having both a compiler and an interpreter provides a balance between performance (through 
+ahead-of-time compilation to C) and flexibility (through on-the-fly interpretation), enabling developers 
+to benefit from both in different contexts.
