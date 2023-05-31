@@ -1,0 +1,62 @@
+1. The lexical grammars of Python and Haskell are not regular. What does that mean, and why aren't they?
+
+1.a. Regular grammar means it can be recognized by a regular expression. If it is not regular, then there are 
+valid tokens that a regular expression cannot be written for that will only match the token and nothing else.
+
+One way to think of it is in terms of memory for the grammar. If the grammar depends on the context of where it
+is in the parsing process, then it is not regular. Regular grammars can be parsed with no 'memory'
+
+ex. For example, consider the rule in Python that a string literal can be a sequence of any characters enclosed 
+in matching pairs of single or double quotes. If we were to express this as a regular expression, we might say 
+something like "a quote, followed by any number of non-quote characters, followed by another quote". But this 
+wouldn't correctly handle cases where a quote character appears within the string, escaped by a backslash, like 
+"this is a \"quoted\" string". To correctly recognize these, we'd need to add a rule that says "a backslash 
+followed by a quote doesn't count as ending the string", and this is where we run into problems, because such a 
+rule can't be expressed with regular expressions. Regular expressions can't handle this sort of "context" — they 
+can't make decisions based on what's happened earlier in the string.
+
+2. Aside from separating tokens--distinguishing print foo from printfoo--spaces aren't used for much in most languages.
+However, in a couple of dark corners, a space does affect how code is parsed in CoffeeScript, Ruby, and the C preprocessor. 
+Where and what effect does it have in each of those languages?
+
+2.a. CoffeeScript uses whitespace to delimit blocks of code. You don't need to use semicolons to terminate expressions, ending the line works just fine
+You also don't need parentheses to invoke a function if you're passing arguments, ex. console.log sys.inspect object → console.log(sys.inspect(object));
+
+Ruby utilizes the newline as the statement terminator if the code on a line contains a syntactically complete statement. 
+If the statement is incomplete, then Ruby continues parsing the statement on the next line.
+
+The parentheses around method invocations may occasionally be omitted in Ruby's grammar. This is a crucial aspect of Ruby's beauty since it enables methods 
+to be used just like statements. Unfortunately, it creates a dangerous dependency on whitespace. Consider the following two lines, which differ only by a single space:
+
+f(3+2)+1 
+
+f (3+2)+1
+
+The first line adds 1 to the outcome after passing the function f the value 5. Ruby considers that the parentheses surrounding the method call have been dropped because 
+the second line has a space after the function name.cy. The parentheses that appear after the space are used to group a subexpression, 
+but the entire expression (3+2)+1 is used as the method argument. If warnings are enabled (with -w), Ruby issues a warning whenever it sees ambiguous code like this.
+
+Spaces can affect how code is parsed in the C preprocessor, particularly in the context of macro definitions. If you put spaces between the macro name and the 
+parentheses in the macro definition, it does not define a function-like macro, but an object-like macro whose expansion happens to start with a pair of parentheses.
+
+Here's an example to illustrate this:
+
+#define lang_init ()    c_init()
+lang_init()
+
+This would expand to `() c_init()`. The first two pairs of parentheses in this expansion come from the macro. The third is the pair that was originally after the macro 
+invocation. Since `lang_init` is defined as an object-like macro due to the space between the name and parentheses, it does not consume those parentheses from the invocation. 
+This means that the placement of spaces can subtly change the behavior of a macro, and thus how the code is parsed in the C preprocessor.
+
+3. Our scanner here, like most, discards comments and whitespace since those aren't needed by the parser.
+Why might you want to write a scanner that does not discard those? What would it be useful for?
+
+3.a. I love how in elm you aren't required to have parentheses for function invocation. It makes it very beautiful and easy to write and read. I can't imagine why you would want to keep
+comments.
+
+After searching, it appears that formatting, highlighting, and documentation tools benefit from not ignoring whitespace and comments. They need the context in order to assist the developer.
+Ex. documentation generators need the commented information., A line counter would need to know how many newline characters are present., a highlighter needs to know what and where to color
+specific characters.
+
+4. Add support to Lox's scanner for C-style /* ... */ block comments. Make sure to handle newlines in them.
+Consider allowing them to nest. Is adding support for nesting more work than you expected? Why?
