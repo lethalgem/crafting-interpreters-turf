@@ -102,17 +102,31 @@ class Scanner {
                         advance();
                 } else if (match('*')) {
                     /* A comment goes until another '* /' */
+                    // nesting means supporting /* */ inside of /* ... */ aka /* ... /* ... */ */
+                    // recognize the start, recognize another start, etc, then recognize each close
+                    // keep a counter of how many starts we've seen
+                    // make sure we hit that counter for ends by the time we reach eof
+                    int nests = 0;
                     while (!isAtEnd()) {
+                        if (peek() == '/') {
+                            advance();
+                            if (peek() == '*') {
+                                advance();
+                                nests++;
+                            }
+                        }
                         if (peek() == '*') {
                             advance();
                             if (peek() == '/') {
                                 advance();
-                                break;
+                                nests--;
+                                if (nests < 0) {
+                                    break;
+                                }
                             }
                         } else {
                             advance();
                         }
-                        System.out.println(source.charAt(current));
                     }
                 } else {
                     addToken(SLASH);

@@ -87,5 +87,39 @@ Consider allowing them to nest. Is adding support for nesting more work than you
                 break;
 
     With nesting:
+            case '/':
+                if (match('/')) {
+                    // A comment goes until the end of the line.
+                    while (peek() != '\n' && !isAtEnd())
+                        advance();
+                } else if (match('*')) {
+                    /* A comment goes until another '* /' matches it */
+                    int nests = 0;
+                    while (!isAtEnd()) {
+                        if (peek() == '/') {
+                            advance();
+                            if (peek() == '*') {
+                                advance();
+                                nests++;
+                            }
+                        }
+                        if (peek() == '*') {
+                            advance();
+                            if (peek() == '/') {
+                                advance();
+                                nests--;
+                                if (nests < 0) {
+                                    break;
+                                }
+                            }
+                        } else {
+                            advance();
+                        }
+                    }
+                } else {
+                    addToken(SLASH);
+                }
+                break;
 
-    
+It was way easier to add support for nesting than I was expecting. A simple counter was enough to make sure 
+each start '/*' had it's own end '*/'.
