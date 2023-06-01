@@ -101,18 +101,14 @@ class Scanner {
                     while (peek() != '\n' && !isAtEnd())
                         advance();
                 } else if (match('*')) {
-                    /* A comment goes until another '* /' */
-                    // nesting means supporting /* */ inside of /* ... */ aka /* ... /* ... */ */
-                    // recognize the start, recognize another start, etc, then recognize each close
-                    // keep a counter of how many starts we've seen
-                    // make sure we hit that counter for ends by the time we reach eof
+                    /* A multiline comment goes until another '* /' */
                     int nests = 0;
                     while (!isAtEnd()) {
                         if (peek() == '/') {
                             advance();
                             if (peek() == '*') {
                                 advance();
-                                nests++;
+                                nests++; // check for nested multiline comments
                             }
                         }
                         if (peek() == '*') {
