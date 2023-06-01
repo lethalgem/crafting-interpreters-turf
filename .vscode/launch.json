@@ -6,6 +6,13 @@
             "name": "Lox",
             "request": "launch",
             "mainClass": "com.craftinginterpretersturf.lox.Lox",
+            "projectName": "crafting-interpreters-turf_aeee5d8d"
+        },
+        {
+            "type": "java",
+            "name": "Lox",
+            "request": "launch",
+            "mainClass": "com.craftinginterpretersturf.lox.Lox",
             "projectName": "crafting-interpreters-turf_2c293026"
         },
         {

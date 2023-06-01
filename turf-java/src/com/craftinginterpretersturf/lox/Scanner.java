@@ -33,7 +33,6 @@ class Scanner {
         keywords.put("true", TRUE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
-
     }
 
     Scanner(String source) {
@@ -101,6 +100,20 @@ class Scanner {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd())
                         advance();
+                } else if (match('*')) {
+                    /* A comment goes until another '* /' */
+                    while (!isAtEnd()) {
+                        if (peek() == '*') {
+                            advance();
+                            if (peek() == '/') {
+                                advance();
+                                break;
+                            }
+                        } else {
+                            advance();
+                        }
+                        System.out.println(source.charAt(current));
+                    }
                 } else {
                     addToken(SLASH);
                 }
