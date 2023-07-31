@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "GenerateAst",
+            "request": "launch",
+            "mainClass": "com.craftinginterpretersturf.tool.GenerateAst",
+            "projectName": "crafting-interpreters-turf_aeee5d8d"
+        },
+        {
+            "type": "java",
             "name": "Lox",
             "request": "launch",
             "mainClass": "com.craftinginterpretersturf.lox.Lox",
