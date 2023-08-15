@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AstPrinter",
+            "request": "launch",
+            "mainClass": "com.craftinginterpretersturf.lox.AstPrinter",
+            "projectName": "crafting-interpreters-turf_aeee5d8d"
+        },
+        {
+            "type": "java",
             "name": "GenerateAst",
             "request": "launch",
             "mainClass": "com.craftinginterpretersturf.tool.GenerateAst",
