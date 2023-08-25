@@ -1,0 +1,92 @@
+1. Earlier, I said that the |, *, and + forms we added to our grammar metasyntax were just syntactic sugar. Take this grammar:
+
+expr → expr ( "(" ( expr ( "," expr )* )? ")" | "." IDENTIFIER )+
+     | IDENTIFIER
+     | NUMBER
+Produce a grammar that matches the same language but does not use any of that notational sugar.
+
+Bonus: What kind of expression does this bit of grammar encode?
+
+
+1.a. 
+
+Grammar rules
+| -> select one production
+() -> Grouping production
++ -> the preceding production must appear at least once
+* -> previous production can be repeated zero or more times
+? -> optional production can appear zero or one time, but not more
+
+Breakdown
+
+Top level productions -> 
+expr ( "(" ( expr ( "," expr )* )? ")" | "." IDENTIFIER )+,
+IDENTIFIER,
+NUMBER
+
+First production ->
+expr ( "(" ( expr ( "," expr )* )? ")" | "." IDENTIFIER )+
+
+expr and "(" ( expr ( "," expr )* )? ")" or "." IDENTIFIER where "(" ( expr ( "," expr )* )? ")" or "." IDENTIFIER must exist
+
+Inner productions ->
+"(" ( expr ( "," expr )* )? ")",
+"." IDENTIFIER
+
+First inner production ->
+"(" ( expr ( "," expr )* )? ")" means an outer "()" is required with the inside being optional.
+
+The inside is an expr with an optional ,expr that can be repeated as many times as you want. ex. expr AND expr, expr AND expr, expr, expr are all acceptable
+
+ex. expr (expr, expr, expr) or it could be expr.IDENTIFIER
+
+Steps to solve:
+1. remove * sugar
+expr → expr ( "(" ( expr ( "," expr )* )? ")" | "." IDENTIFIER )+
+     | IDENTIFIER
+     | NUMBER
+becomes
+expr -> expr ( "(" ( exprlist )? ")" | "." IDENTIFIER )+
+     | IDENTIFIER
+     | NUMBER
+exprlist -> expr "," exprlist
+
+2. remove ? sugar
+expr -> expr ( "(" ( exprlist )? ")" | "." IDENTIFIER )+
+     | IDENTIFIER
+     | NUMBER
+exprlist -> expr "," exprlist
+becomes
+expr -> expr ( "(" optexprlist ")" | "." IDENTIFIER )+
+     | IDENTIFIER
+     | NUMBER
+optexprlist -> exprlist | nothing
+exprlist -> expr "," exprlist
+
+3. remove | sugar
+expr -> expr ( "(" ( exprlist )? ")" | "." IDENTIFIER )+
+     | IDENTIFIER
+     | NUMBER
+exprlist -> expr "," exprlist
+becomes
+expr -> expr ("(" optexprlist ")")+
+expr -> expr ("." IDENTIFIER)+
+expr -> IDENTIFIER
+expr -> NUMBER
+optexprlist -> exprlist
+optexprlist -> nothing
+exprlist -> expr "," exprlist
+
+4. remove + sugar
+expr -> expr "(" optexprlist ")"
+expr -> expr "." IDENTIFIER
+expr -> IDENTIFIER
+expr -> NUMBER
+optexprlist -> exprlist
+optexprlist -> nothing
+exprlist -> expr "," exprlist
+
+Answer:
+remove 
+
+Bonus answer: this is a tuple
