@@ -11,6 +11,8 @@ abstract class Expr {
     R visitLiteralExpr(Literal expr);
 
     R visitUnaryExpr(Unary expr);
+
+    R visitRPNExpr(RPN expr);
   }
 
   static class Binary extends Expr {
@@ -69,6 +71,19 @@ abstract class Expr {
 
     final Token operator;
     final Expr right;
+  }
+
+  static class RPN extends Expr {
+    RPN(Expr expression) {
+      this.expression = expression;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitRPNExpr(this);
+    }
+
+    final Expr expression;
   }
 
   abstract <R> R accept(Visitor<R> visitor);

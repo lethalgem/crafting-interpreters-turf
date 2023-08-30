@@ -89,4 +89,70 @@ exprlist -> expr "," exprlist
 Answer:
 remove 
 
-Bonus answer: this is a tuple
+Bonus answer: this is a tuple <- chatgpt says its a function
+
+2. The Visitor pattern lets you emulate the functional style in an object-oriented language. 
+Devise a complementary pattern for a functional language. It should let you bundle all of the 
+operations on one type together and let you define new types easily.
+
+(SML or Haskell would be ideal for this exercise, but Scheme or another Lisp works as well.)
+
+2. a.
+
+Did not complete. May return to this in the future. Here is an article that has multiple
+solutions https://chelseatroy.com/2022/01/02/emulating-objects-in-functionally-oriented-
+languages-the-real-midwives-of-haskell/#:~:text=The%20Visitor%20pattern%20lets%20you,you
+%20define%20new%20types%20easily.
+
+3. In reverse Polish notation (RPN), the operands to an arithmetic operator are both placed 
+before the operator, so 1 + 2 becomes 1 2 +. Evaluation proceeds from left to right. Numbers 
+are pushed onto an implicit stack. An arithmetic operator pops the top two numbers, performs 
+the operation, and pushes the result. Thus, this:
+
+(1 + 2) * (4 - 3)
+
+in RPN becomes:
+
+1 2 + 4 3 - *
+
+Define a visitor class for our syntax tree classes that takes an expression, converts it 
+to RPN, and returns the resulting string.
+
+3. a.
+
+static class RPN extends Expr {
+    RPN(Expr expression) {
+      this.expression = expression;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitRPNExpr(this);
+    }
+
+    final Expr expression;
+}
+
+@Override
+public String visitRPNExpr(Expr.RPN expr) {
+     return rpnPrint(expr.expression);
+}
+
+private String rpnPrint(Expr expr) {
+     if (expr instanceof Expr.Binary) {
+          Expr.Binary binaryExpr = (Expr.Binary) expr;
+          return rpnPrint(binaryExpr.left) + " " +
+               rpnPrint(binaryExpr.right) + " " +
+               binaryExpr.operator.lexeme;
+     } else if (expr instanceof Expr.Unary) {
+          Expr.Unary unaryExpr = (Expr.Unary) expr;
+          return rpnPrint(unaryExpr.right) + " " + unaryExpr.operator.lexeme;
+     } else if (expr instanceof Expr.Literal) {
+          Expr.Literal literalExpr = (Expr.Literal) expr;
+          return literalExpr.value.toString();
+     } else if (expr instanceof Expr.Grouping) {
+          Expr.Grouping groupingExpr = (Expr.Grouping) expr;
+          return rpnPrint(groupingExpr.expression);
+     }
+     return "";
+}
