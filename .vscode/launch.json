@@ -1,38 +1,45 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "AstPrinter",
-            "request": "launch",
-            "mainClass": "com.craftinginterpretersturf.lox.AstPrinter",
-            "projectName": "crafting-interpreters-turf_aeee5d8d"
-        },
-        {
-            "type": "java",
-            "name": "GenerateAst",
-            "request": "launch",
-            "mainClass": "com.craftinginterpretersturf.tool.GenerateAst",
-            "projectName": "crafting-interpreters-turf_aeee5d8d"
-        },
-        {
-            "type": "java",
-            "name": "Lox",
-            "request": "launch",
-            "mainClass": "com.craftinginterpretersturf.lox.Lox",
-            "projectName": "crafting-interpreters-turf_2c293026"
-        },
-        {
-            "name": "(gdb) Launch",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "GenerateAst",
+      "request": "launch",
+      "mainClass": "com.craftinginterpretersturf.tool.GenerateAst",
+      "projectName": "crafting-interpreters-turf_2c293026"
+    },
+    {
+      "type": "java",
+      "name": "AstPrinter",
+      "request": "launch",
+      "mainClass": "com.craftinginterpretersturf.lox.AstPrinter",
+      "projectName": "crafting-interpreters-turf_aeee5d8d"
+    },
+    {
+      "type": "java",
+      "name": "GenerateAst",
+      "request": "launch",
+      "mainClass": "com.craftinginterpretersturf.tool.GenerateAst",
+      "projectName": "crafting-interpreters-turf_aeee5d8d"
+    },
+    {
+      "type": "java",
+      "name": "Lox",
+      "request": "launch",
+      "mainClass": "com.craftinginterpretersturf.lox.Lox",
+      "projectName": "crafting-interpreters-turf_2c293026"
+    },
+    {
+      "name": "(gdb) Launch",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    }
+  ]
 }
