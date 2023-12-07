@@ -4,6 +4,8 @@ import java.util.List;
 
 abstract class Expr {
   interface Visitor<R> {
+    R visitCommaExpr(Comma expr);
+
     R visitBinaryExpr(Binary expr);
 
     R visitGroupingExpr(Grouping expr);
@@ -11,6 +13,23 @@ abstract class Expr {
     R visitLiteralExpr(Literal expr);
 
     R visitUnaryExpr(Unary expr);
+  }
+
+  static class Comma extends Expr {
+    Comma(Expr left, Token operator, Expr right) {
+      this.left = left;
+      this.operator = operator;
+      this.right = right;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitCommaExpr(this);
+    }
+
+    final Expr left;
+    final Token operator;
+    final Expr right;
   }
 
   static class Binary extends Expr {
