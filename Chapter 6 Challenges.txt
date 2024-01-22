@@ -21,3 +21,7 @@ Add support for comma expressions. Give them the same precedence and associativi
 3. Add error productions to handle each binary operator appearing without a left-hand operand. In other 
  words, detect a binary operator appearing at the beginning of an expression. Report that as an error, 
  but also parse and discard a right-hand operand with the appropriate precedence.
+
+ 3.a See turf-java/src/com/craftinginterpretersturf/lox/Parser.java
+    Needed to add a check at lowest precedence to see if current token was a binary operator then throw error.
+    This is because at the lowest precedence, no left hand expression has been found.

@@ -115,6 +115,10 @@ public class Parser {
             return new Expr.Grouping(expr);
         }
 
+        if (match(COMMA, BANG_EQUAL, EQUAL_EQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, SLASH, STAR, PLUS)) {
+            throw error(peek(), "Missing left-hand operand for binary expression");
+        }
+
         throw error(peek(), "Expect expression.");
     }
 
