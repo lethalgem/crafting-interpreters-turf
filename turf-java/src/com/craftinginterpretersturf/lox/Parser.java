@@ -2,6 +2,8 @@ package com.craftinginterpretersturf.lox;
 
 import java.util.List;
 
+import javax.management.Query;
+
 import static com.craftinginterpretersturf.lox.TokenType.*;
 
 public class Parser {
@@ -28,12 +30,36 @@ public class Parser {
     }
 
     private Expr comma() {
-        Expr expr = equality();
+        Expr expr = ternary();
 
         while (match(COMMA)) {
             Token operator = previous();
-            Expr right = comparison();
+            Expr right = ternary();
             expr = new Expr.Comma(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr ternary() {
+        Expr expr = colon();
+
+        while (match(QUESTION_MARK)) {
+            Token operator = previous();
+            Expr right = colon();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr colon() {
+        Expr expr = equality();
+
+        while (match(COLON)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Binary(expr, operator, right);
         }
 
         return expr;
