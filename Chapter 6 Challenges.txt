@@ -16,12 +16,15 @@ Add support for comma expressions. Give them the same precedence and associativi
 2. Likewise, add support for the C-style conditional or “ternary” operator '?:'. What precedence level 
  is allowed between the '?' and ':'? Is the whole operator left-associative or right-associative?
 
- 2.a it should be right-associative
+ 2.a The '?' should take precedence over the ':'. This is because the parser must first evaluate a '?' 
+ to understand that a ':' expr should come next. It should be right-associative because we would expect
+ to evaluate nested ternaries from right to left.
  
  Also See turf-java/src/com/craftinginterpretersturf/lox/Parser.java
- 
- test with 
- 1 ? 2 : 3
+
+ Potentially the hardest challenge yet. Required re-reading many times portions of this chapter and applying 
+ techniques not explained yet. While it works, I got lucky that it is right-associative and I'm not sure if 
+ this is the best implementation.
 
 3. Add error productions to handle each binary operator appearing without a left-hand operand. In other 
  words, detect a binary operator appearing at the beginning of an expression. Report that as an error, 
