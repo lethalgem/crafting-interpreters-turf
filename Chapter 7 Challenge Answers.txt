@@ -5,8 +5,31 @@ Or it could simply lead to bugs and confusion.
 Would you extend Lox to support comparing other types? If so, which pairs of types do you allow and how do you define their ordering? 
 Justify your choices and compare them to other languages.
 
+1.a. I wouldn't allow comparisons like 3 < "pancake". I would rely on the developer to perform some sort of conversion function to make
+"pancake" a number for comparison. A part of me feels that is likely what is happening on the language level anyway if the interpretation
+is supported. I am very concerned about bugs that are difficult to find because of behavior like this. I think we all remember times in
+our programming careers where hours are spent on looking for a bug somewhere in the code. When its something like this you basically need
+to be printing the result of every line and praying you find it is this line, or have a fundamental understanding of what the language 
+is doing under the hood. Very specifically thinking of javascript when writing these thoughts.
+
+Caveat: my experience with other languages is limited. Swift, Kotlin, very little C++, Rust, SQL, Elm, very little javascript
+
 2. Many languages define + such that if either operand is a string, the other is converted to a string and the results are then 
 concatenated. For example, "scone" + 4 would yield scone4. Extend the code in visitBinaryExpr() to support that.
+
+2.a. See turf-java/src/com/craftinginterpretersturf/lox/Interpreter.java
+
+Interesting note/bug. Because Lox treats every number as a double we have to make a choice in the interpreter. Chop off the ".0" at the 
+end such that:
+- "scone" + 4 would yield scone4, and 
+- "scone" + 4.0 would yield scone4 
+
+OR preserve the ".0" such that:
+- "scone" + 4 would yield scone4.0, and
+- "scone" + 4.0 would yield scone4.0
+
+I'm not sure of a solution that would preserve the ".0" or not by the time the interpreter has been reached. It would need to be handled
+earlier on in the lexing/parsing stages.
 
 3. What happens right now if you divide a number by zero? What do you think should happen? Justify your choice. How do other languages 
 you know handle division by zero, and why do they make the choices they do?
