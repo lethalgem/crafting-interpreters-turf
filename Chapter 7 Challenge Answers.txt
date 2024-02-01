@@ -35,3 +35,12 @@ earlier on in the lexing/parsing stages.
 you know handle division by zero, and why do they make the choices they do?
 
 Change the implementation in visitBinaryExpr() to detect and report a runtime error for this case.
+
+3.a. See turf-java/src/com/craftinginterpretersturf/lox/Interpreter.java
+
+Dividing by zero currently results in "Infinity" if the numerator is not zero. If the numerator is also zero it results in NaN.
+The IEEE 754 Standard applies to Java wheredividing by zero will produce positive or negative infinity, unless dividing zero by zero which 
+gives NaN. I don't have any strong opinions, I've yet to experience a scenario where I have to divide by zero.
+
+Javascript follows the IEEE standarad as well. Apparently C/C++ just throws a catchable error. In PHP you get a warning. In rust it panics.
+I think these decisions are made because its easiest to just have it error whereas there does exist a IEEE standard that can be followed.
