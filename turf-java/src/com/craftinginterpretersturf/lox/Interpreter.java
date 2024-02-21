@@ -8,7 +8,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement : statements) {
-                execute(statement);
+                if (statement instanceof Stmt.Expression) {
+                    Expr expr = ((Stmt.Expression) statement).expression;
+                    Object value = evaluate(expr);
+                    System.out.println(stringify(value));
+                } else {
+                    execute(statement);
+                }
             }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
