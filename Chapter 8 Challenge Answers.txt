@@ -44,3 +44,12 @@ var a = 1;
 What did you expect it to do? Is it what you think it should do? What does analogous code in other languages you are familiar with do?
 What do you think users will expect this to do?
 
+3.a. I expect it to set the shadowed (local) variable to 3 because the outer variable a is 1. Then it should print 3.
+
+What it actually does is print 3, as predicted.
+
+In python you need to declare a in a global scope then use the `global a` inside of a function or other local scope. In which case it prints 3.
+In rust it prints 3 as expected.
+In javascript it prints 3 as expected.
+
+I think users would expect it to print 3. I've always been taught that the local scope supercedes the outer scope. I think that's pretty common.
