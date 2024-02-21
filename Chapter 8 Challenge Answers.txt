@@ -20,6 +20,8 @@ void interpret(List<Stmt> statements) {
         }
     }
 ```
+First check if there is an expression in the list of statements provided to the repl, then cast the statement to that expression, evaluate, and print.
+
 
 2. Maybe you want Lox to be a little more explicit about variable initialization. Instead of implicitly initializing variables to nil, make it a
 runtime error to access a variable that has not been initialized or assigned to, as in:
@@ -32,6 +34,22 @@ a = "assigned";
 print a; // OK, was assigned first.
 
 print b; // Error!
+
+2.a. See turf-java/src/com/craftinginterpretersturf/lox/Interpreter.java
+
+```
+@Override
+public Object visitVariableExpr(Expr.Variable expr) {
+    var variable = environment.get(expr.name);
+    if (variable == null) {
+        throw new RuntimeError(expr.name, "Variable has not been initialized.");
+    } else {
+        return variable;
+    }
+}
+```
+When retrieving the variable from the environment, check if it is null. If so throw an error that the variable has not yet been initialized.
+
 
 3. What does the following program do?
 

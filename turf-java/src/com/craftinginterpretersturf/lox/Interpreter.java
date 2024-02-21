@@ -44,7 +44,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        return environment.get(expr.name);
+        var variable = environment.get(expr.name);
+        if (variable == null) {
+            throw new RuntimeError(expr.name, "Variable has not been initialized.");
+        } else {
+            return variable;
+        }
     }
 
     private void checkNumberOperand(Token operator, Object operand) {
