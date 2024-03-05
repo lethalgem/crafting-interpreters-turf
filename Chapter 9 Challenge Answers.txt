@@ -2,8 +2,58 @@
 built into the language. Show how conditional execution can be implemented in terms of those. Name a language that uses this technique 
 for its control flow.
 
+first-class function definition:
+    A function is treated like any other variable. It can be assigned, passed in as a parameter, and returned from a function.
+    Ex.
+    ```
+    function sayHello() {
+        return "Hello, ";
+    }
+    function greeting(helloMessage, name) {
+        console.log(helloMessage() + name);
+    }
+    // Pass `sayHello` as an argument to `greeting` function
+    greeting(sayHello, "JavaScript!");
+    // Hello, JavaScript!
+    ```
+
+dynamic dispatch definition:
+    Dynamically finding the function to run rather than statically assigning the function code a place in memory
+    Ex.
+    When we say that a language has dynamic dispatch, it means we can’t be 100% sure which function obj.method() will call until this 
+    code runs. For example, any JavaScript engine would need to take the current value of the obj variable, search for a property 
+    called method on that object, keep searching for it on the prototype chain if needed — and finally, “jump” into the function (or 
+    error if it wasn’t found).
+
+Conditional execution can be handled using these techniques because functions can have differing behavior based on properties at runtime.
+    Ex. instead of
+    ```
+    if (shape.isFilled()) {
+        fillAndStroke(shape);
+    } else {
+        stroke(shape);
+    }
+    ```
+
+    it can be
+
+    ```
+    shape.fill.draw();
+    shape.stroke.draw();
+    ```
+
+    where the draw function, fill and stroke objects determine how something is drawn. Rather than relying on specific conditional control
+    flow.
+
+    src: https://md.ekstrandom.net/blog/2017/05/dynamic-dispatch
+
+From what I've found, Java and JavaScript both support this method of control flow. I couldn't find anything that was explicit about this
+being the preferred or only method.
+
 2. Likewise, looping can be implemented using those same tools, provided our interpreter supports an important optimization. What is it, 
 and why is it necessary? Name a language that uses this technique for iteration.
+
+
 
 3. Unlike Lox, most other C-style languages also support break and continue statements inside loops. Add support for break statements.
 
