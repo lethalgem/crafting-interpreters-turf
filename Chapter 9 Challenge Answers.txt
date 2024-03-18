@@ -53,7 +53,9 @@ being the preferred or only method.
 2. Likewise, looping can be implemented using those same tools, provided our interpreter supports an important optimization. What is it, 
 and why is it necessary? Name a language that uses this technique for iteration.
 
-
+Looping with recursion in a compiled language requires dynamic dispatch. Otherwise each function call has to be inlined, taking up infinite space.
+Aka overflowing the stack. The optimization needed is called Tail Call Optimization (TCO). The high level explanation is that TCO makes a call
+to another function instead of itself, thus not adding to the stack for each recursive call. Scheme is an example of a language that uses TCO.
 
 3. Unlike Lox, most other C-style languages also support break and continue statements inside loops. Add support for break statements.
 
