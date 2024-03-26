@@ -6,6 +6,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
+        System.out.println(statements);
         try {
             for (Stmt statement : statements) {
                 execute(statement);
@@ -172,6 +173,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             execute(stmt.body);
         }
         return null;
+    }
+
+    @Override
+    public Void visitBreakStmt(Stmt.Break stmt) {
+
     }
 
     @Override

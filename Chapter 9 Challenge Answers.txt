@@ -2,7 +2,7 @@
 built into the language. Show how conditional execution can be implemented in terms of those. Name a language that uses this technique 
 for its control flow.
 
-first-class function definition:
+1.a. first-class function definition:
     A function is treated like any other variable. It can be assigned, passed in as a parameter, and returned from a function.
     Ex.
     ```
@@ -53,7 +53,7 @@ being the preferred or only method.
 2. Likewise, looping can be implemented using those same tools, provided our interpreter supports an important optimization. What is it, 
 and why is it necessary? Name a language that uses this technique for iteration.
 
-Looping with recursion in a compiled language requires dynamic dispatch. Otherwise each function call has to be inlined, taking up infinite space.
+2.a. Looping with recursion in a compiled language requires dynamic dispatch. Otherwise each function call has to be inlined, taking up infinite space.
 Aka overflowing the stack. The optimization needed is called Tail Call Optimization (TCO). The high level explanation is that TCO makes a call
 to another function instead of itself, thus not adding to the stack for each recursive call. Scheme is an example of a language that uses TCO.
 
@@ -62,3 +62,7 @@ to another function instead of itself, thus not adding to the stack for each rec
 The syntax is a break keyword followed by a semicolon. It should be a syntax error to have a break statement appear outside of any 
 enclosing loop. At runtime, a break statement causes execution to jump to the end of the nearest enclosing loop and proceeds from there.
 Note that the break may be nested inside other blocks and if statements that also need to be exited.
+
+to test:
+while ( x < 3) { break; print(3); }
+while ( x < 3) { print(3); } break; <- should be syntax error
