@@ -71,3 +71,5 @@ var x = 0; while ( x < 3) { print(3); x = x + 1; }
 3
 3
 3
+
+TODO: now that we parse and store as statement, find a way to kill execution
