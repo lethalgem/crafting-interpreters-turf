@@ -28,6 +28,8 @@ How do you handle the tricky case of an anonymous function expression occurring 
 
 fun () {};
 
+2.a. 
+
 3. Is this program valid?
 
 fun scope(a) {
