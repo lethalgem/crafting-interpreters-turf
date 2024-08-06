@@ -1,5 +1,7 @@
 package com.craftinginterpretersturf.lox;
 
+import static com.craftinginterpretersturf.lox.TokenType.ANONYMOUS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,6 +165,35 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitFunctionStmt(Stmt.Function stmt) {
         LoxFunction function = new LoxFunction(stmt, environment);
         environment.define(stmt.name.lexeme, function);
+        return null;
+    }
+
+    @Override
+    public Void visitAnonymousStmt(Stmt.Anonymous stmt) {
+        // Stmt.Anonymous anonymous = new Anonymous(stmt.params, stmt.body);
+        Stmt.Function function_stmt = new Stmt.Function((new Token(ANONYMOUS,
+                "anonymous", null, 0)), stmt.params,
+                stmt.body);
+        LoxFunction function = new LoxFunction(function_stmt, environment);
+        environment.define("test", function);
+        // either needs to be it's own new function
+        // or
+        // convert the stmts. They are technically the same
+        // but one doesn't have a name
+
+        // Thinking I'll need to create a new function to handle the anonymous
+        // functions. Just translating it to a normal function
+        // results in errors where an expression is expected. Need to look into why that
+        // is first, could be easily salvagable
+
+        // fun thrice(fn) { for (var i = 1; i <= 3; i = i + 1) { fn(i); }} thrice(fun
+        // (a) { print a;});
+
+        // the issue is actually happening before. Parsing is failing on the call for
+        // the function
+        // currently can only parse function and anonymous declarations
+        // need to be able to parse an anonymous declaration inside of a function call.
+
         return null;
     }
 

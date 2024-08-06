@@ -333,6 +333,8 @@ public class Parser {
             } while (match(COMMA));
         }
 
+        System.out.println(arguments);
+
         Token paren = consume(RIGHT_PAREN, "Expect ')' after arguments.");
 
         return new Expr.Call(callee, paren, arguments);
@@ -343,6 +345,7 @@ public class Parser {
 
         while (true) {
             if (match(LEFT_PAREN)) {
+                System.out.println("parsing call");
                 expr = finishCall(expr);
             } else {
                 break;
