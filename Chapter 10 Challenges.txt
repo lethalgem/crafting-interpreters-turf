@@ -28,7 +28,13 @@ How do you handle the tricky case of an anonymous function expression occurring 
 
 fun () {};
 
-2.a. 
+2.a. Too complex for the time being. Need to move on. Stuck at the parsing stage for 
+
+thrice(fun (a) {
+  print a;
+});
+
+as a lox function requires a list of tokens for the parameters. Whereas this is a full anonymous function and not just a token.
 
 3. Is this program valid?
 

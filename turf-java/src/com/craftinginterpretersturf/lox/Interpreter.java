@@ -186,8 +186,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         // results in errors where an expression is expected. Need to look into why that
         // is first, could be easily salvagable
 
-        // fun thrice(fn) { for (var i = 1; i <= 3; i = i + 1) { fn(i); }} thrice(fun
-        // (a) { print a;});
+        /*
+         * fun thrice(fn) { for (var i = 1; i <= 3; i = i + 1) { fn(i); }}
+         * thrice(fun(a) { print a;});
+         */
 
         // the issue is actually happening before. Parsing is failing on the call for
         // the function
