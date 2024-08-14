@@ -96,6 +96,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitAssignExpr(Expr.Assign expr) {
         resolve(expr.value);
+        System.out.println("this is an assign expr");
         resolveLocal(expr, expr.name);
         return null;
     }
@@ -148,6 +149,8 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             Lox.error(expr.name, "Can't read local variable in its own initializer.");
         }
 
+        System.out.println("this is a variable expr");
+
         resolveLocal(expr, expr.name);
         return null;
     }
@@ -179,6 +182,76 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private void endScope() {
+        // check for vars here cuz we're leaving the local scope
+        // true/false in the scope just means it has been initialized, not if it's been
+        // used
+        // interpreter locals does have anything that had an expr for the var
+
+        /*
+         * // Scope 0
+         * var a = 3;
+         * {
+         * // Scope 1
+         * var b = 3; // unused here
+         * b = 4;
+         * b = a; // used here
+         * a = b; // used here
+         * }
+         * a = 4; // used here
+         */
+
+        // so we should look in the current scope and anything lower to see if it's used
+        // at all?
+        // but what about
+        /*
+         * var a = 3;
+         * {
+         * var a = 4;
+         * }
+         */
+        // in this case they are different variables, so looking in a lower scope would
+        // break it
+        // but also did they say these are two different objects? So its easy to tell
+        // which is used?
+        // nope. names are not unique and we simply solve the shadowing problem when we
+        // resolve
+        // locally by going up each scope until we find the name
+        // ex. it would find 4 here before 3
+
+        // Is this as simple as seeing if a variable was every initialized? And if not
+        // then it must
+        // not have been used?
+        // probably only a part of the puzzle, what if it's initialized and still never
+        // used?
+
+        // for (int i = 0; i < scopes.size(); i++) {
+        // var local = scopes.get(i);
+        // if (local.containsValue(false)) {
+        // Lox.error(local., "Already a variable with this name in this scope.");
+        // }
+        // }
+
+        System.out.println("ending scope");
+
+        var localScope = scopes.get(scopes.size() - 1);
+        System.out.println(localScope);
+        var localScopeVars = localScope.keySet();
+        System.out.println(localScopeVars);
+        for (String key : localScopeVars) {
+            if (!localScope.get(key)) {
+                Lox.error(key, "Variable was never initialized.");
+            }
+        }
+
+        // *edit* I am dumb, the above doesn't work even for { var a; } because we mark
+        // it as 'initialized' when the variable is defined
+        // not sure why that is, wouldn't we need to use the damn thing to initialize
+        // it?
+        // new idea -- make another map that is exactly scope but just marks if the
+        // thing
+        // has been used. Requires doubling up a lot of code and redundant storage, but
+        // fuck it?
+
         scopes.pop();
     }
 
