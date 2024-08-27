@@ -74,7 +74,7 @@ public class Lox {
     }
 
     static void error(String name, String message) {
-        System.err.println("Error" + name + ": " + message);
+        System.err.println("Error " + name + ": " + message);
         hadError = true;
     }
 

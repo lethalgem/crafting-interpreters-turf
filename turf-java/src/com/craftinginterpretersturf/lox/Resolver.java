@@ -7,8 +7,35 @@ import java.util.Stack;
 
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private final Interpreter interpreter;
-    private final Stack<Map<String, Boolean>> scopes = new Stack<>();
+    private final Stack<Map<String, VariableInfo>> scopes = new Stack<>();
     private FunctionType currentFunction = FunctionType.NONE;
+
+    private class VariableInfo {
+        private Boolean initialized = false;
+        private Boolean used = false;
+
+        // Constructor
+        public VariableInfo(Boolean initialized, Boolean used) {
+            this.initialized = initialized;
+            this.used = used;
+        }
+
+        public void setInitialized(Boolean value) {
+            this.initialized = value;
+        }
+
+        public void setUsed(Boolean value) {
+            this.used = value;
+        }
+
+        public Boolean getInitialized() {
+            return this.initialized;
+        }
+
+        public Boolean getUsed() {
+            return this.used;
+        }
+    }
 
     Resolver(Interpreter interpreter) {
         this.interpreter = interpreter;
@@ -96,7 +123,6 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitAssignExpr(Expr.Assign expr) {
         resolve(expr.value);
-        System.out.println("this is an assign expr");
         resolveLocal(expr, expr.name);
         return null;
     }
@@ -145,11 +171,11 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitVariableExpr(Expr.Variable expr) {
-        if (!scopes.isEmpty() && scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
-            Lox.error(expr.name, "Can't read local variable in its own initializer.");
+        if (scopes.peek().get(expr.name.lexeme) != null) {
+            if (!scopes.isEmpty() && scopes.peek().get(expr.name.lexeme).getInitialized() == Boolean.FALSE) {
+                Lox.error(expr.name, "Can't read local variable in its own initializer.");
+            }
         }
-
-        System.out.println("this is a variable expr");
 
         resolveLocal(expr, expr.name);
         return null;
@@ -178,7 +204,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private void beginScope() {
-        scopes.push(new HashMap<String, Boolean>());
+        scopes.push(new HashMap<String, VariableInfo>());
     }
 
     private void endScope() {
@@ -189,15 +215,15 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         /*
          * // Scope 0
-         * var a = 3;
-         * {
-         * // Scope 1
-         * var b = 3; // unused here
-         * b = 4;
-         * b = a; // used here
-         * a = b; // used here
-         * }
-         * a = 4; // used here
+         * // * var a = 3;
+         * // * {
+         * // * // Scope 1
+         * // * var b = 3; // unused here
+         * // * b = 4;
+         * // * b = a; // used here
+         * // * a = b; // used here
+         * // * }
+         * // * a = 4; // used here
          */
 
         // so we should look in the current scope and anything lower to see if it's used
@@ -231,17 +257,17 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         // }
         // }
 
-        System.out.println("ending scope");
+        // System.out.println("ending scope");
 
-        var localScope = scopes.get(scopes.size() - 1);
-        System.out.println(localScope);
-        var localScopeVars = localScope.keySet();
-        System.out.println(localScopeVars);
-        for (String key : localScopeVars) {
-            if (!localScope.get(key)) {
-                Lox.error(key, "Variable was never initialized.");
-            }
-        }
+        // var localScope = scopes.get(scopes.size() - 1);
+        // System.out.println(localScope);
+        // var localScopeVars = localScope.keySet();
+        // System.out.println(localScopeVars);
+        // for (String key : localScopeVars) {
+        // if (!localScope.get(key).getInitialized()) {
+        // Lox.error(key, "Variable was never initialized.");
+        // }
+        // }
 
         // *edit* I am dumb, the above doesn't work even for { var a; } because we mark
         // it as 'initialized' when the variable is defined
@@ -252,6 +278,35 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         // has been used. Requires doubling up a lot of code and redundant storage, but
         // fuck it?
 
+        // also to be clear, 'initializing' a variable does not mean it is 'used'
+
+        // okay, created new class for the map called VariableInfo
+        // I can track initialization and usage with it
+        // theoretically, I just need to see where we use it in an expr and then mark it
+        // off?
+        // then report what isn't marked?
+
+        // check here as we pop
+
+        // System.out.println("ending scope");
+
+        var localScope = scopes.get(scopes.size() - 1);
+        // System.out.println(localScope);
+        var localScopeVars = localScope.keySet();
+        // System.out.println(localScopeVars);
+        for (String key : localScopeVars) {
+            if (!localScope.get(key).getUsed()) {
+                Lox.error(key, "Variable was never used.");
+            }
+        }
+
+        // { var a = true; } Error a: Variable was never used.
+        // { var a = 3; { var b = a; } } Error b: Variable was never used.
+        // { var a = 3; { var a = 4; } } Error a: Variable was never used. Error a:
+        // Variable was never used.
+        // { var a = 3; { var b = 3; b = 4; b = a; a = b; var c = a; } a = 4; } Error c:
+        // Variable was never used.
+
         scopes.pop();
     }
 
@@ -259,23 +314,24 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         if (scopes.isEmpty())
             return;
 
-        Map<String, Boolean> scope = scopes.peek();
+        Map<String, VariableInfo> scope = scopes.peek();
         if (scope.containsKey(name.lexeme)) {
             Lox.error(name, "Already a variable with this name in this scope.");
         }
 
-        scope.put(name.lexeme, false);
+        scope.put(name.lexeme, new VariableInfo(false, false));
     }
 
     private void define(Token name) {
         if (scopes.isEmpty())
             return;
-        scopes.peek().put(name.lexeme, true);
+        scopes.peek().put(name.lexeme, new VariableInfo(true, false));
     }
 
     private void resolveLocal(Expr expr, Token name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             if (scopes.get(i).containsKey(name.lexeme)) {
+                scopes.get(i).get(name.lexeme).setUsed(true); // mark usage
                 interpreter.resolve(expr, scopes.size() - 1 - i);
                 return;
             }

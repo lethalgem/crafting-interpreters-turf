@@ -24,6 +24,11 @@ pointing to the outerscope variable with this declaration.
 
 3. Extend the resolver to report an error if a local variable is never used.
 
+3.a. See implementation in Resolver.Java. I added a class to the `scopes` map that includes a flag for
+whether or not the variable had been used. I update this flag to true in resolveLocal(). Then when we
+endScope() I loop over the variables in the map and error on any that were unused. This also covers the 
+scenario of accessing the variables in nested scopes.
+
 4. Our resolver calculates which environment the variable is found in, but it’s still looked up 
 by name in that map. A more efficient environment representation would store local variables in 
 an array and look them up by index.
