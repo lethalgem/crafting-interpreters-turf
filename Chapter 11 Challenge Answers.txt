@@ -1,7 +1,9 @@
 1. Why is it safe to eagerly define the variable bound to a function’s name when other variables 
 must wait until after they are initialized before they can be used?
 
-1.a. 
+1.a. This allows the developer to declare their function afer using it in their code. Additionally,
+a direct quote from this book, "This lets a function recursively refer to itself inside its own body."
+
 
 2. How do other languages you know handle local variables that refer to the same name in their 
 initializer, like:
@@ -36,3 +38,7 @@ an array and look them up by index.
 Extend the resolver to associate a unique index for each local variable declared in a scope. When 
 resolving a variable access, look up both the scope the variable is in and its index and store that. 
 In the interpreter, use that to quickly access a variable by its index instead of using a map.
+
+4.a. I don't understand what the end result is asking for. It seems like we want to store an index within an index?
+What is meant by look up both the scope the variable is in and its index and store that? I will have to return to this
+later.
